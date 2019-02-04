@@ -144,7 +144,7 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 <br/><img src="../screens/application_settings_bot_file_secret.jpg" />
 
 1. Commit your changes to git and push to your remote repository to kick off a new build and deploy
-	- note - it is not advised to commit the `appsettings.json` file containing the `botFileSecret`
+	- it is not advised to commit the `appsettings.json` file containing the botFileSecret since this is used for local development only (your app will run in production without the `appsettings.json` file, consider not checking it into your git repo) 
 	- you can confirm the automated pipeline is working by visiting the __Deployment Center__ section of the App Service hosting your bot in the Azure Portal
 
 1. Test your bot in the web chat and the Bot Framework Emulator to ensure your public endpoint is functioning properly
@@ -167,7 +167,7 @@ Now that we have a working public endpoint, we can add enable one of the several
 
 	```
 
-	note - embedding the secret in javascript makes it easy for other developers to embed your bot in their pages. for best practices, you should [exchange the secret for a time-based token](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-4.0#option-1---keep-your-secret-hidden-exchange-your-secret-for-a-token-and-generate-the-embed). it's a little bit more work but much more secure. 
+	note - embedding the secret in javascript makes it easy for other developers to embed your bot in their pages. In the future, as a best practice, you should [exchange the secret for a time-based token](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-4.0#option-1---keep-your-secret-hidden-exchange-your-secret-for-a-token-and-generate-the-embed). It's a little bit more work but much more secure.
 
 1. To get the URL that the `iframe` needs to point to, navigate to your Web App Bot in the Azure Portal
 

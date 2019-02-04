@@ -15,9 +15,11 @@ Examples of middleware uses are translation, spell-check, logging and natural la
 
 ### What is Cosmos DB?
 
-Azure Cosmos DB was built from the ground up with global distribution and horizontal scale at its core. It offers turnkey global distribution across any number of Azure regions by transparently scaling and replicating your data wherever your users are. Elastically scale your writes and reads all around the globe, and pay only for what you need.
+Azure Cosmos DB was built from the ground up with global distribution and horizontal scale at its core. Azure Cosmos DB provides native support for NoSQL and OSS APIs including MongoDB, Cassandra, Gremlin and SQL.
 
-Azure Cosmos DB provides native support for NoSQL and OSS APIs including MongoDB, Cassandra, Gremlin and SQL. Today, we'll be using the SQL document API since it will be very familiar to anyone that has experience with TSQL.
+It offers turnkey global distribution across any number of Azure regions by transparently scaling and replicating your data wherever your users are. Elastically scale your writes and reads all around the globe, and pay only for what you need.
+
+Today, we'll be using the SQL document API since it will be very familiar to anyone that has experience with TSQL.
 
 <br />
 
