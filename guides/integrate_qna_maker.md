@@ -15,7 +15,13 @@ Because the .bot file contains sensitive information, it should be encrypted usi
 
 We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bot file which we'll later read in and use. But because the .bot file is encrypted, we first need to decrypt it using the [__msbot__]((https://github.com/Microsoft/botbuilder-tools/tree/master/packages/MSBot#installation)) command line tool.
 
-1. Ensure you have __msbot__ installed by typing:
+1. Ensure you have __node__ v8+ installed by opening a command prompt or terminal and typing:
+	```
+	node -v
+	```
+	- if you do not have __node__ installed already, [click here](https://nodejs.org/en/) to download and install it
+
+1. Ensure you have __msbot__ installed by opening a command prompt or terminal and typing:
 	```
 	msbot -h
 	```
@@ -30,6 +36,8 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 	```
 	msbot secret --clear --secret <YOUR SECRET HERE>
 	```
+
+	- Note - if you have more than one .bot file in your project, you'll need to be explicit about the .bot file path by passing in a `-bot <PATH TO BOT FILE>` parameter OR delete the other .bot file so only one exists in the project root
 
 1. Add the following json to your .bot file anywhere in the `services` node array and replace with your knowledge base ID, endpoint key, host URL and then save
 	```
@@ -48,13 +56,24 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 ### Section 2: Integrate the QnAMaker .NET Core SDK
 
 1. QnA Maker supports REST API but we'll take advantage of the SDK support by adding the following nuget package:
-	```
-	dotnet add package Microsoft.Bot.Builder.AI.QnA
-	```
+	- if you are using VS Code, you can add nuget packages using the terminal (Terminal > New Terminal)
+		```
+		dotnet add package Microsoft.Bot.Builder.AI.QnA -v 4.2.0
+		```
+	- if you are using Visual Studio 2017, right click on your project and select __Manage NuGet Packages...__, click the __Browse__ tab and search for:
+		```
+		Microsoft.Bot.Builder.AI.QnA
+		```
+		You should get back one result - click on it and select version 4.2.0, then click the __Install__ button
 
-1. Open the `Bot.cs` file and create a private static variable within the `EurekaBot` class for our `QnAMaker` object, then and add the necessary `using` statement
+1. Open the `Bot.cs` file and create a private static variable within the `EurekaBot` class for our `QnAMaker` object
 	```
 	static QnAMaker _qnaMakerService;
+	```
+
+1. Add a `using` statement at the top for the QnA Maker namespace:
+	```
+	using Microsoft.Bot.Builder.AI.QnA;
 	```
 
 1. Add a method to create the value for `_qnaMakerService` if not already assigned

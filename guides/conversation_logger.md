@@ -94,9 +94,15 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 ### Section 3: Modify `ConversationLogger` to log data to Cosmos
 
 1. Cosmos DB supports REST API but we'll take advantage of the SDK support by adding the following nuget package:
-	```
-	dotnet add package Microsoft.Azure.DocumentDB
-	```
+	- if you are using VS Code, you can add nuget packages using the terminal (Terminal > New Terminal)
+		```
+		dotnet add package Microsoft.Azure.DocumentDB -v 2.2.2
+		```
+	- if you are using Visual Studio 2017, right click on your project and select __Manage NuGet Packages...__, click the __Browse__ tab and search for:
+		```
+		Microsoft.Azure.DocumentDB
+		```
+		The first result should be the one we want and authored by Microsoft so click on it and select the latest version (this sample uses 2.2.2) and click the __Install__ button
 
 1. Add the following json to your .bot file anywhere in the `services` node array and replace with your Cosmos DB key and endpoint URI and then save
 	```
@@ -111,10 +117,16 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 	note - you can change the name of the collection and database to any value you like
 
 
-1. Add the following private variables into the `ConversationLogger` class and necessary `using` statements
+1. Add the following private variables into the `ConversationLogger` class
 	```
 	static DocumentClient _cosmosClient;
 	static Uri _collectionLink;
+	```
+
+1. Add the following `using` statements at the top for the Cosmos DB namespace:
+	```
+	using Microsoft.Azure.Documents;
+	using Microsoft.Azure.Documents.Client;
 	```
 
 1. Add the following method to the `ConversationLogger` class - it will be responsible for ensuring we have a Cosmos database, collection and client to work with:
