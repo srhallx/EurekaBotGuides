@@ -27,7 +27,7 @@ When you've completed this tutorial, you should expect to see this:
 
 1. In VS Code, open the project located at `src/start_here/EurekaBot` - this will be our baseline for our QnA bot
 
-1. Copy the .bot file in the bot source code you download in the previous step into the root of this project
+1. Copy the .bot file in the bot source code you download __from Azure__ in the previous step into the root of this project
     - the .bot file contains several configuration keys needed by the bot to run
 
 1. In the `appsettings.json` file, specify the path to the `.bot` file you just copied over as well as the bot file secret
@@ -60,7 +60,7 @@ When you've completed this tutorial, you should expect to see this:
 
 ### Section 2: Configure CI/CD to Deploy on Commit
 
-1. In the online repository option of your choice, create a new repository to host the source code for this project
+1. In the online repository option of your choice (GitHub, Azure Repos, etc), create a new repository to host the source code for this project
 
 1. Commit and push the project source code of root of this project to the `master` branch
 
@@ -76,6 +76,8 @@ When you've completed this tutorial, you should expect to see this:
 
 1. Choose __App Service Kudu build server__ as the Build Provider and click __Continue__
 <br/><img src="../screens/deploy_select_kudu.jpg" />
+
+1. Sign in if necessary
 
 1. Complete any settings specific to the source control provider selected in the previous step such as the organization, repository name and branch to watch and click __Continue__
 <br/><img src="../screens/deploy_source_control_provider_settings.jpg" width="70%" />

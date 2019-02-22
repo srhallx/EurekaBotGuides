@@ -149,7 +149,10 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 	Please save this secret in a secure place to keep your keys safe.
 	```
 
-1. Copy the new key that was generated to somewhere safe - you'll need to enter it into the Bot Framework Emulator again as well as the `appsettings.json` file to test locally and modify the __Application settings__ of our App Service
+1. Copy the new key that was generated to somewhere safe. You will need to enter it again in the following places:
+	1. The Bot Framework Emulator 
+	1. `appsettings.json` file to test locally 
+	1.  __Application settings__ of our App Service 
 
 1. Browse to [https://portal.azure.com](https://portal.azure.com) and log in
 

@@ -7,7 +7,7 @@ When you've completed this tutorial, you should expect to see this:
 
 ### What is Middleware?
 
-Middleware is a new concept in Bot Framework v4 and is aimed at making it very easy to splice intelligent layers into your bot. Middleware will will execute in the order added in the `Startup.cs` file both up and down the middleware stack.
+Middleware is a new concept in Bot Framework v4 and is aimed at making it very easy to splice intelligent layers into your bot. Middleware will execute in the order added in the `Startup.cs` file both up and down the middleware stack.
 
 Examples of middleware uses are translation, spell-check, logging and natural language entity extraction. For additional information on how middleware works, check out the [docs here](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-concept-middleware).
 <br/><img src="https://docs.microsoft.com/en-us/azure/bot-service/v4sdk/media/bot-builder-dialog-state-problem.png?view=azure-bot-service-4.0" />
@@ -104,7 +104,7 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 		```
 		The first result should be the one we want and authored by Microsoft so click on it and select the latest version (this sample uses 2.2.2) and click the __Install__ button
 
-1. Add the following json to your .bot file anywhere in the `services` node array and replace with your Cosmos DB key and endpoint URI and then save
+1. Add the following json to your .bot file (this will require decrypting it; refer to the steps [here](https://github.com/aditmer/EurekaBotGuides/blob/master/guides/integrate_qna_maker.md#section-1-modify-the-bot-configuration-file)) anywhere in the `services` node array and replace with your Cosmos DB key and endpoint URI and then save
 	```
 	{
 		"type": "cosmosdb",
