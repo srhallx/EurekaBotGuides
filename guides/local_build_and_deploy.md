@@ -27,7 +27,7 @@ When you've completed this tutorial, you should expect to see this:
 
 1. In VS Code, open the project located at `src/start_here/EurekaBot` - this will be our baseline for our QnA bot
 
-1. Copy the .bot file in the bot source code you download __from Azure__ in the previous step into the root of this project
+1. Copy the .bot file in the bot source code you downloaded __from Azure__ in the previous step into the root of this project
     - the .bot file contains several configuration keys needed by the bot to run
 
 1. In the `appsettings.json` file, specify the path to the `.bot` file you just copied over as well as the bot file secret
