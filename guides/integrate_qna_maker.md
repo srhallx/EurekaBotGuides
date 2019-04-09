@@ -5,51 +5,60 @@
 When you've completed this tutorial, you should expect to see this:
 <br/><img src="../screens/embedded_web_chat_qna.jpg" /><br/><br/>
 
-### Section 1: Modify the .bot Configuration File
 
-[The .bot file](https://docs.microsoft.com/en-us/azure/bot-service/bot-file-basics) contains configuration data about your bot and the services it uses. It contains the development and production endpoints, the bot app ID and password to connect to the Bot Connector Service, and endpoints, keys and other settings used by other cognitive services.
+### Section 1: Modify the application settings to hold our QnA Maker knowledge base info
 
-The .bot file is used in a few different ways. It's what the Bot Framework Emulator uses to connect to your bot locally and publicly. It's also used in `ConfigureServices` method in the `Startup` class of our .NET Core bot to read in the endpoints, keys, etc for cognitive services used within the bot, such as Translation, Spell Check, QnA Maker and LUIS.
+Within your project, you'll see a [`appsettings.json`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2#default-configuration) file. This file is used to store key/value configuration data needed by your application. This data is typically pulled in at runtime and used within your app. The `appsettings.json` file is for storing your app configuration data when locally hosted or remotely hosted if the file is deployed. Depending on the sensitivity of the data, you may want to ignore this file when commiting code to a public repository.
 
-Because the .bot file contains sensitive information, it should be encrypted using a secret. Both the .bot file path and the secret are defined in the `appsettings.json` file locally and in the __Application settings__ of the App Service in the Azure Portal.
+When your app is running in a hosted scenario, such as in Azure, you can override the values of the key/value pairs under the __Configuration__ section in your App Service in the [Azure Portal](https://portal.azure.com). This allows you to use different instances of services for different environments (i.e. tracking exceptions for staging using a different instance of Application Insights) 
 
-We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bot file which we'll later read in and use. But because the .bot file is encrypted, we first need to decrypt it using the [__msbot__]((https://github.com/Microsoft/botbuilder-tools/tree/master/packages/MSBot#installation)) command line tool.
+Because we have a few bits of information tied to our knowledge base, we need to add this to our appsettings.json file 
 
-1. Ensure you have __node__ v8+ installed by opening a command prompt or terminal and typing:
+1. Open the `appsettings.json` file and add the following code within the `settings` node after the `noAnswerMessage` node, then replace with your knowledge base ID, endpoint key, host URL from the previous step and then save
 	```
-	node -v
-	```
-	- if you do not have __node__ installed already, [click here](https://nodejs.org/en/) to download and install it
-
-1. Ensure you have __msbot__ installed by opening a command prompt or terminal and typing:
-	```
-	msbot -h
-	```
-	- if you do not have __msbot__ installed already, use __npm__ to install it:
-		```
-		npm install -g msbot
-		```
-
-1. Locate the .bot file secret in either the `appsettings.json` file or in the __Application settings__ of the bot's App Service in Azure Portal
-
-1. Run the following command in the root of your project and verify the contents of the .bot file are now unencrypted:
-	```
-	msbot secret --clear --secret <YOUR SECRET HERE>
+	"qnaMaker": {
+		"endpointKey": "<YOUR_QNAMAKER_ENDPOINT_KEY>",
+		"knowledgeBaseId": "<YOUR_QNAMAKER_KB_ID>",
+		"hostname": "<YOUR_QNAMAKER_HOST_URL>"
+	},
 	```
 
-	- Note - if you have more than one .bot file in your project, you'll need to be explicit about the .bot file path by passing in a `-bot <PATH TO BOT FILE>` parameter OR delete the other .bot file so only one exists in the project root
-
-1. Add the following json to your .bot file anywhere in the `services` node array and replace with your knowledge base ID, endpoint key, host URL and then save
+1. At this point, your `appsettings.json` file should look like this:
 	```
 	{
-		"type": "qna",
-		"endpointKey": "<YOUR_QNA_KB_ENDPOINT_KEY>",
-		"hostname": "<YOUR_QNA_HOST_URL>",
-		"kbId": "<YOUR_QNA_KB_ID>"
+		"settings" : {
+			"noAnswerMessage": "I was unable to find an answer to your question.",
+			"qnaMaker": {
+				"endpointKey": "7871390f-735d-422b-8fdb-680a186788dc",
+				"knowledgeBaseId": "3c021717-06c7-43f7-a2ac-42f25e29853d",
+				"hostname": "https://mybotqnamaker.azurewebsites.net/qnamaker"
+			},
+			"welcomeCard": {
+				"title": "Meet Eureka!",
+				"description": "Eureka is the Secretary of State’s new online search assistant. Powered by Microsoft’s artificial intelligence, Eureka knows the answers to frequently asked Business Programs Division questions.",
+				"videoUrl": "https://youtu.be/YxUPIu7PL14",
+				"learnMoreUrl": "https://aka.ms/EurekaBot"
+			}
+		}
 	}
 	```
 
-1. Set the value of `botFileSecret` to `""` in the `appsettings.json` file now that your .bot file is decrypted
+1. Add the following class into the namespace in the `Settings.cs` file:
+	```
+	public class QnAMakerServiceSettings
+	{
+		public string EndpointKey { get; set; }
+		public string Hostname { get; set; }
+		public string KnowledgeBaseId { get; set; }
+	}
+	```
+
+	This class will be used to store the QnA Maker configuration data to be used at runtime
+
+1. Create a new property inside the `Settings` class to store our `QnAMakerServiceSettings` data
+	```
+	public QnAMakerServiceSettings QnAMaker { get; set; }
+	```
 
 <br/>
 
@@ -83,14 +92,11 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 		if(_qnaMakerService != null)
 			return;
 
-		//Iterate through all services in the .bot file and get the first one with 'qna' as the type
-		var service = _botConfiguration.Services.FirstOrDefault(s => s.Type == ServiceTypes.QnA) as QnAMakerService;
-
 		var qnaEndpoint = new QnAMakerEndpoint()
 		{
-			KnowledgeBaseId = service.KbId,
-			EndpointKey = service.EndpointKey,
-			Host = service.Hostname,
+			KnowledgeBaseId = _settings.QnAMaker.KnowledgeBaseId,
+			EndpointKey = _settings.QnAMaker.EndpointKey,
+			Host = _settings.QnAMaker.Hostname,
 		};
 
 		_qnaMakerService = new QnAMaker(qnaEndpoint);
@@ -116,7 +122,7 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 		}
 		else
 		{
-			await turnContext.SendActivityAsync(_configuration["noAnswerMessage"], cancellationToken: cancellationToken);
+			await turnContext.SendActivityAsync(_settings.NoAnswerMessage, cancellationToken: cancellationToken);
 		}
 	}	
 	```
@@ -137,36 +143,7 @@ We need to add the QnA Maker endpoint key, host and knowledge base ID to the .bo
 
 ### Section 3: Deploy to Azure
 
-1. Before we can deploy to Azure or even push the changes to your repo, we need to re-encrypt the .bot file to keep our keys private so let's run the following command in the root of your project:
-	```
-	msbot secret --new
-	```
-	which should return something similar to this:
-	```
-	Your bot is encrypted with secret:
-	lC0zcp5jxoFu9ya4iDuovIUYTRa5F1icvY49uzBUeXDo=
-
-	Please save this secret in a secure place to keep your keys safe.
-	```
-
-1. Copy the new key that was generated to somewhere safe. You will need to enter it again in the following places:
-	1. The Bot Framework Emulator 
-	1. `appsettings.json` file to test locally 
-	1.  __Application settings__ of our App Service 
-
-1. Browse to [https://portal.azure.com](https://portal.azure.com) and log in
-
-1. Navigate to the Resource Group that contains your bot services
-
-1. Click on the App Service hosting your bot
-
-1. Click on the __Application settings__ section
-
-1. Scroll down to find the `botFileSecret` key and set the value to the key generated in the previous step
-<br/><img src="../screens/application_settings_bot_file_secret.jpg" />
-
 1. Commit your changes to git and push to your remote repository to kick off a new build and deploy
-	- it is not advised to commit the `appsettings.json` file containing the botFileSecret since this is used for local development only (your app will run in production without the `appsettings.json` file, consider not checking it into your git repo) 
 	- you can confirm the automated pipeline is working by visiting the __Deployment Center__ section of the App Service hosting your bot in the Azure Portal
 
 1. Test your bot in the web chat and the Bot Framework Emulator to ensure your public endpoint is functioning properly
@@ -189,7 +166,7 @@ Now that we have a working public endpoint, we can add enable one of the several
 
 	```
 
-	note - embedding the secret in javascript makes it easy for other developers to embed your bot in their pages. In the future, as a best practice, you should [exchange the secret for a time-based token](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-4.0#option-1---keep-your-secret-hidden-exchange-your-secret-for-a-token-and-generate-the-embed). It's a little bit more work but much more secure.
+	> Note - embedding the secret in javascript makes it easy for other developers to embed your bot in their pages. In the future, as a best practice, you should [exchange the secret for a time-based token](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-4.0#option-1---keep-your-secret-hidden-exchange-your-secret-for-a-token-and-generate-the-embed). It's a little bit more work but much more secure.
 
 1. To get the URL that the `iframe` needs to point to, navigate to your Web App Bot in the Azure Portal
 

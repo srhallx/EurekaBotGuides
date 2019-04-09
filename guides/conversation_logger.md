@@ -43,7 +43,7 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 	var result = results.First();
 	var reply = turnContext.Activity.CreateReply(result.Answer);
 
-	//We want to track tag the score too so Middleware has access to it
+	//We want to track the score too so Middleware has access to it
 	reply.Properties.Add("qna_score", result.Score);
 
 	//Return the first result (you could also ensure the result.Score is of a minimum threshold)
@@ -104,17 +104,16 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 		```
 		The first result should be the one we want and authored by Microsoft so click on it and select the latest version (this sample uses 2.2.2) and click the __Install__ button
 
-1. Add the following json to your .bot file (this will require decrypting it; refer to the steps [here](https://github.com/aditmer/EurekaBotGuides/blob/master/guides/integrate_qna_maker.md#section-1-modify-the-bot-configuration-file)) anywhere in the `services` node array and replace with your Cosmos DB key and endpoint URI and then save
+1. Add the following json to your `appsettings.json` file within the `settings` node and replace with your Cosmos DB key and endpoint URI and then save
 	```
-	{
-		"type": "cosmosdb",
-		"collection": "qna_history",
-		"database": "eureka_bot",
-		"key": "<YOUR_COSMOS_KEY>",
-		"endpoint": "<YOUR_COSMOS_URI>"
-	}
+	"cosmos" : {
+		"collection" : "qna_history",
+		"database" : "eureka_bot",
+		"endpoint": "<YOUR_COSMOS_URI>",
+		"key" : "<YOUR_COSMOS_KEY>"
+	},
 	```
-	note - you can change the name of the collection and database to any value you like
+	> Note - you can change the name of the collection and database to any value you like
 
 
 1. Add the following private variables into the `ConversationLogger` class
@@ -134,16 +133,14 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 	//Ensures the Cosmos database, collection and client are all created and assigned
 	async Task EnsureDatabaseConfigured()
 	{
-		var service = _botConfiguration.Services.FirstOrDefault(s => s.Type == ServiceTypes.CosmosDB) as CosmosDbService;
-
 		if (_cosmosClient == null)
 		{
-			_collectionLink = UriFactory.CreateDocumentCollectionUri(service.Database, service.Collection);
-			_cosmosClient = new DocumentClient(new Uri(service.Endpoint), service.Key, ConnectionPolicy.Default);
+			_collectionLink = UriFactory.CreateDocumentCollectionUri(_settings.Cosmos.Database, _settings.Cosmos.Collection);
+			_cosmosClient = new DocumentClient(new Uri(_settings.Cosmos.Endpoint), _settings.Cosmos.Key, ConnectionPolicy.Default);
 		}
 
-		var db = new Database { Id = service.Database };
-		var collection = new DocumentCollection { Id = service.Collection };
+		var db = new Database { Id = _settings.Cosmos.Database };
+		var collection = new DocumentCollection { Id = _settings.Cosmos.Collection };
 
 		//Create the database
 		var result = await _cosmosClient.CreateDatabaseIfNotExistsAsync(db);
@@ -151,7 +148,7 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 		if (result.StatusCode == HttpStatusCode.Created || result.StatusCode == HttpStatusCode.OK)
 		{
 			//Create the collection
-			var dbLink = UriFactory.CreateDatabaseUri(service.Database);
+			var dbLink = UriFactory.CreateDatabaseUri(_settings.Cosmos.Database);
 			await _cosmosClient.CreateDocumentCollectionIfNotExistsAsync(dbLink, collection);
 		}
 	}

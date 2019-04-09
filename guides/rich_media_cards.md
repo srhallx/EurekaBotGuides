@@ -25,7 +25,7 @@ Messages exchanged between user and bot can contain media attachments, such as i
 		if (turnContext.Activity.MembersAdded != null)
 		{
 			var reply = turnContext.Activity.CreateReply();
-			reply.Attachments.Add(new WelcomeCard(_configuration).ToAttachment());
+			reply.Attachments.Add(new WelcomeCard(_settings).ToAttachment());
 
 			foreach (var newMember in turnContext.Activity.MembersAdded)
 			{
@@ -45,5 +45,4 @@ Messages exchanged between user and bot can contain media attachments, such as i
 
 1. Once working locally, commit and push your code to trigger a deployment, then test it out using the Bot Framework Emulator with the __production__ endpoint selected
 
-	note - the Web Chat will not automatically trigger the `ConversationUpdate` activity to be invoked like the Bot Framework Emulator does so you will need to send a message first to the bot before it will respond with a media card
-
+	> Note - the Web Chat will not automatically trigger the `ConversationUpdate` activity to be invoked like the Bot Framework Emulator does so you will need to send a message first to the bot before it will respond with a media card
