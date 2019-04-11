@@ -66,8 +66,6 @@ Azure's QnA Maker service makes it easy to import existing knowledge base data (
 
 1. Click on __Create a knowledge base__ at the top
 
-1. We just completed STEP 1 so lets move on to STEP 2, __Connect your QnA service to your KB__
-
 1. Select the __Microsoft Azure Directory ID__ to which your subscription is tied
 
 1. Select the __Azure subscription name__ you used in Section 1 above
@@ -86,6 +84,7 @@ Azure's QnA Maker service makes it easy to import existing knowledge base data (
     - Chit-chat will allow your bot to answer basic questions ("hello", "how are you?", "who made you?" etc) and interact with the user moderately
 
 1. Click the __Create your KB__ button at the bottom - it will take a minute or two for your knowledge base to be created
+
 <br/>
 
 ### Section 3: Train, Test and Publish the Knowledge Base  
