@@ -35,7 +35,7 @@ Today, we'll be using the SQL document API since it will be very familiar to any
 
 1. Now that we have middleware in our project, we need to add it to the startup process - open the `Startup.cs` file and add the following line of code just after setting the `options.OnTurnError` property delegate, within the `services.AddBot` delegate body:
 	```
-	options.Middleware.Add(new ConversationLogger(botConfig));
+	options.Middleware.Add(new ConversationLogger(settings));
 	```
 
 1. Open the `Bot.cs` file and replace the contents of the `if (results != null && results.Any())` statement within the `LookupAnswerInKowledgeBase` method with the following code:
