@@ -33,7 +33,7 @@ When you've completed this tutorial, you should expect to see this:
 
 1. Enter __EurekaBot__ for the Bot name (this can be anything)
 
-1. Enter the local debugging endpoint URL of `http://localhost:3987/api/messages` and click the __Save and connect__ button
+1. Enter the local debugging endpoint URL of `http://localhost:3978/api/messages` and click the __Save and connect__ button
 <br/><img src="../screens/bot_framework_emulator_new_config_local.jpg" />
 
 1. Type a message and hit enter - the bot should echo the message right back to you
